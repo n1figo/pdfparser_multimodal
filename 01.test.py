@@ -12,22 +12,33 @@ fname = "sample.pdf"
 # PDF에서 요소 추출
 
 
-def extract_pdf_elements(path, fname):
-    """
-    PDF 파일에서 이미지, 테이블, 그리고 텍스트 조각을 추출합니다.
-    path: 이미지(.jpg)를 저장할 파일 경로
-    fname: 파일 이름
-    """
-    return partition_pdf(
-        filename=os.path.join(path, fname),
-        extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
-        infer_table_structure=True,  # 테이블 구조 추론 활성화
-        chunking_strategy="by_title",  # 제목별로 텍스트 조각화
-        max_characters=4000,  # 최대 문자 수
-        new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
-        combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
-        image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
-    )
+
+import PyPDF2
+
+def extract_text_from_pdf(pdf_path):
+    with open(pdf_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text()
+    return text
+
+# def extract_pdf_elements(path, fname):
+#     """
+#     PDF 파일에서 이미지, 테이블, 그리고 텍스트 조각을 추출합니다.
+#     path: 이미지(.jpg)를 저장할 파일 경로
+#     fname: 파일 이름
+#     """
+#     return partition_pdf(
+#         filename=os.path.join(path, fname),
+#         extract_images_in_pdf=True,  # PDF 내 이미지 추출 활성화
+#         infer_table_structure=True,  # 테이블 구조 추론 활성화
+#         chunking_strategy="by_title",  # 제목별로 텍스트 조각화
+#         max_characters=4000,  # 최대 문자 수
+#         new_after_n_chars=3800,  # 이 문자 수 이후에 새로운 조각 생성
+#         combine_text_under_n_chars=2000,  # 이 문자 수 이하의 텍스트는 결합
+#         image_output_dir_path=path,  # 이미지 출력 디렉토리 경로
+#     )
 
 
 # 요소를 유형별로 분류
@@ -46,6 +57,10 @@ def categorize_elements(raw_pdf_elements):
         elif "unstructured.documents.elements.CompositeElement" in str(type(element)):
             texts.append(str(element))  # 텍스트 요소 추가
     return texts, tables
+
+
+
+
 
 
 # 요소 추출
