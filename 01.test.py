@@ -4,6 +4,11 @@ import os
 from langchain_text_splitters import CharacterTextSplitter
 from unstructured.partition.pdf import partition_pdf
 
+# 파일 경로
+fpath = "multi-modal/"
+fname = "sample.pdf"
+
+
 # PDF에서 요소 추출
 
 
